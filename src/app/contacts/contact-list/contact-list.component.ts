@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
 import { Contact } from '../contact.module';
 
 @Component({
@@ -6,7 +6,7 @@ import { Contact } from '../contact.module';
   templateUrl: './contact-list.component.html',
   styleUrl: './contact-list.component.css',
 })
-export class ContactListComponent implements OnInit {
+export class ContactListComponent {
   contacts: Contact[] = [
     new Contact(
       1,
@@ -26,9 +26,4 @@ export class ContactListComponent implements OnInit {
     ),
   ];
 
-  constructor() {}
-
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
   }
-}
