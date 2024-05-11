@@ -1,12 +1,13 @@
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { Contact } from '../contact.module';
 
 @Component({
-  selector: 'cms-contact-list',
-  templateUrl: './contact-list.component.html',
-  styleUrl: './contact-list.component.css',
+  selector: 'cms-contact-item',
+  templateUrl: './contact-item.component.html',
+  styleUrl: './contact-item.component.css'
 })
-export class ContactListComponent {
+export class ContactItemComponent {
+
   contacts: Contact[] = [
     new Contact(
       1,
@@ -25,6 +26,6 @@ export class ContactListComponent {
       null
     ),
   ];
+contact: any;
 
-  }
-
+}
