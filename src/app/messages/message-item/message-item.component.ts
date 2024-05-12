@@ -7,5 +7,5 @@ import { Message } from '../message.module';
   styleUrl: './message-item.component.css'
 })
 export class MessageItemComponent {
-  @Input() message: Message;
+  @Input() message?: Message;
 }

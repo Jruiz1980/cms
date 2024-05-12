@@ -7,12 +7,12 @@ import { Message } from '../message.module';
   styleUrl: './message-edit.component.css'
 })
 export class MessageEditComponent {
-  @ViewChild('subjectInput') subjectInputRef: ElementRef;
-  @ViewChild('msgInput') msgInputRef: ElementRef;
+  @ViewChild('subjectInput') subjectInputRef?: ElementRef;
+  @ViewChild('msgInput') msgInputRef?: ElementRef;
   @Output() addMessageEvent = new EventEmitter<Message>()
 
   addMessage(){
-    let message = new Message('000', this.subjectInputRef.nativeElement.value, this.msgInputRef.nativeElement.value, "Alex")
+    let message = new Message('000', this.subjectInputRef?.nativeElement.value, this.msgInputRef?.nativeElement.value, "Alex")
     this.addMessageEvent.emit(message);
   }
 }
