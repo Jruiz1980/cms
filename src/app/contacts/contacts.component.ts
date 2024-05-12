@@ -7,5 +7,5 @@ import { Contact } from './contact.module';
   styleUrl: './contacts.component.css',
 })
 export class ContactsComponent {
-    @Input() selectedContact: Contact;
+    @Input() selectedContact?: Contact;
 }
