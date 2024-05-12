@@ -15,7 +15,6 @@ import { MessageItemComponent } from './messages/message-item/message-item.compo
 import { MessageEditComponent } from './messages/message-edit/message-edit.component';
 import { MessageListComponent } from './messages/message-list/message-list.component';
 import { MessagesComponent } from './messages/messages.component';
-import { MessageDetailComponent } from './messages/message-detail/message-detail.component';
 
 
 @NgModule({
@@ -34,8 +33,6 @@ import { MessageDetailComponent } from './messages/message-detail/message-detail
     MessageEditComponent,
     MessageListComponent,
     MessagesComponent,
-    MessageDetailComponent,
-    
   ],
   imports: [BrowserModule],
   providers: [],
