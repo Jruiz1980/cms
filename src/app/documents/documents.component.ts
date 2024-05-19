@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Document } from './document.module';
 
 @Component({
   selector: 'cms-documents',
