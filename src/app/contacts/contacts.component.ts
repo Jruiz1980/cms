@@ -8,7 +8,7 @@ import { ContactService } from './contact.service';
   styleUrl: './contacts.component.css',
 })
 export class ContactsComponent {
-    @Input() selectedContact?: Contact;
+    @Input() selectedContact: Contact | undefined;
 
     constructor(private contactService: ContactService) {}
 
