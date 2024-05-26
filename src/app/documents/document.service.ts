@@ -6,6 +6,7 @@ import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
   providedIn: 'root'
 })
 export class DocumentService {
+  [x: string]: any;
   documents: Document[] = [];
   documentSelectedEvent = new EventEmitter<Document>();
 

@@ -8,5 +8,5 @@ import { Document } from '../document.module';
   styleUrl: './document-item.component.css'
 })
 export class DocumentItemComponent {
-    @Input() document!: Document;
+    @Input() document?: Document;
 }
