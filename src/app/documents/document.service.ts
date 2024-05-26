@@ -6,7 +6,6 @@ import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
   providedIn: 'root'
 })
 export class DocumentService {
-  [x: string]: any;
   documents: Document[] = [];
   documentSelectedEvent = new EventEmitter<Document>();
 
@@ -19,8 +18,8 @@ export class DocumentService {
    }
   
   getDocument(id: string): Document {
-    let document:Document |undefined = this.documents.find((d) => d.id === id);
-    if (!document) {
+    let document: Document = this.documents.find((d) => d.id === id);
+    if (document) {
       throw new Error("Document not found")
     }
     return document;

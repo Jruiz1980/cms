@@ -8,19 +8,19 @@ import { DocumentService } from './document.service';
   templateUrl: './documents.component.html',
   styleUrl: './documents.component.css'
 })
-export class DocumentListComponent implements OnInit {
+export class DocumentsComponent implements OnInit {
 
   documents: Document[] = []
 
-  constructor(private docService: DocumentService) {}
+  constructor(private documentService: DocumentService) {}
 
   ngOnInit(){
-    this.documents = this.docService.getDocuments();
+    this.documents = this.documentService.getDocuments();
   }
 
 
   onSelectedDocument(document: Document){
-    this.docService.documentSelectedEvent.emit(document);
+    this.documentService.documentSelectedEvent.emit(document);
   }
 }
 /*export class DocumentsComponent implements OnInit {
