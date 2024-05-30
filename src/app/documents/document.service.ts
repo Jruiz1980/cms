@@ -1,5 +1,5 @@
-import { EventEmitter,Injectable } from '@angular/core';
-import { Document } from './document.module';
+import { EventEmitter, Injectable } from '@angular/core';
+import { Document } from './document.model';
 import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
 
 @Injectable({
@@ -9,20 +9,23 @@ export class DocumentService {
   documents: Document[] = [];
   documentSelectedEvent = new EventEmitter<Document>();
 
-  constructor() { 
+  constructor() {
     this.documents = MOCKDOCUMENTS;
-  }
-  
-  getDocuments(): Document[] {
+   }
+
+   getDocuments(): Document[] {
     return this.documents.slice();
    }
-  
-  getDocument(id: string): Document {
-    let document: Document = this.documents.find((d) => d.id === id);
-    if (document) {
-      throw new Error("Document not found")
-    }
-    return document;
-  }
-  
+
+   getDocument(id: string): Document {
+    let theDocument: Document = null;
+
+    this.documents.forEach(doc => {
+      if(doc.id === id){
+        theDocument = doc;
+      }
+    })
+    return theDocument;
+   }
+
 }

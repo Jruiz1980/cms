@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
-import { Document } from '../document.module';
+import { Document } from '../document.model';
 import { DocumentService } from '../document.service';
 
 @Component({

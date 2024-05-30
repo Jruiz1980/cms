@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Document } from '../document.module';
-
+import { Document } from '../document.model';
 
 @Component({
   selector: 'cms-document-item',
@@ -8,5 +7,8 @@ import { Document } from '../document.module';
   styleUrl: './document-item.component.css'
 })
 export class DocumentItemComponent {
-    @Input() document!: Document;
+  @Input() document: Document;
+
+
+
 }

@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Contact } from './contact.module';
+import { Contact } from './contact.model';
 import { MOCKCONTACTS } from './MOCKCONTACTS';
 
 @Injectable({
@@ -19,7 +19,7 @@ export class ContactService {
 
    getContact(id: string): Contact {
     let contacts: Contact[] = this.getContacts();
-    let theContact: Contact = {} as Contact;
+    let theContact: Contact = null;
     
     contacts.forEach(contact => {
       if(id === contact.id){
@@ -28,4 +28,6 @@ export class ContactService {
     })
     return theContact;
    }
+
+
 }
