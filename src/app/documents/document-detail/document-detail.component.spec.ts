@@ -1,23 +1,40 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+//import { WinRefService } from 'src/app/win-ref.service';
+import { Document } from '../document.model';
+import { DocumentService } from '../document.service';
 
-import { DocumentDetailComponent } from './document-detail.component';
+@Component({
+  selector: 'cms-document-detail',
+  templateUrl: './document-detail.component.html',
+  styleUrl: './document-detail.component.css',
+})
 
-describe('DocumentDetailComponent', () => {
-  let component: DocumentDetailComponent;
-  let fixture: ComponentFixture<DocumentDetailComponent>;
+export class DocumentDetailComponent implements OnInit {
+  nativeWindow: any;
+  document: Document;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [DocumentDetailComponent]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(DocumentDetailComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  constructor(
+    private docService: DocumentService,
+    private router: Router,
+    private route: ActivatedRoute,
+    //private winRef: WinRefService
+  ) {}
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  ngOnInit(): void {
+    //this.nativeWindow = this.winRef.getNativeWindow();
+
+    this.route.params.subscribe((params: Params) => {
+      this.document = this.docService.getDocument(params['id']);
+    });
+  }
+
+  onView() {
+    if (this.document.url) this.nativeWindow.open(this.document.url);
+  }
+
+  onDelete() {
+    this.docService.deleteDocument(this.document);
+    this.router.navigate(['../'], { relativeTo: this.route });
+  }
+}
