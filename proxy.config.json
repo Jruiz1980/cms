@@ -1,0 +1,8 @@
+{
+    "/auth/login": {
+        "target": "https://wdd-project-ecdc5-default-rtdb.firebaseio.com/",
+        "secure": false,
+        "changeOrigin": true,
+        "pathRewrite": { "^/auth/login": "" }
+    }
+}

@@ -1,7 +1,10 @@
-import { Component, EventEmitter, OnInit, OnDestroy, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { Contact } from '../contact.model';
 import { ContactService } from '../contact.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
+//import { ContactsFilterPipe } from '../contacts-filter.pipe';
 
 @Component({
   selector: 'cms-contact-list',
@@ -9,21 +12,45 @@ import { ContactService } from '../contact.service';
   styleUrl: './contact-list.component.css'
 })
 export class ContactListComponent implements OnInit, OnDestroy {
-  contacts: Contact[] = [];
+
   subscription: Subscription;
+  term: string;
+$dragEvent: CdkDragDrop<string[],string[],any>;
 
-  constructor(private contactService: ContactService) {}
+  constructor(private contactService: ContactService, private router: Router, private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
+  contacts: Contact[] = [];
+
+
+  ngOnInit(){
     this.contacts = this.contactService.getContacts();
-    this.contactService.contactListChangedEvent.subscribe(
-      (contacts: Contact[]) => {
-        this.contacts = contacts;
-      }
-    );
+    this.subscription = this.contactService.contactsChangedEvent.subscribe((contacts: Contact[]) => {
+      this.contacts = contacts;
+    })
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy(){
     this.subscription.unsubscribe();
+  }
+
+  onNewContact(){
+    this.router.navigate(['new'], {relativeTo: this.route})
+  }
+
+  drop(dragEvent: CdkDragDrop<string[]>) {
+    if (dragEvent.previousContainer === dragEvent.container) {
+      return;
+    } else {
+      transferArrayItem(
+        dragEvent.previousContainer.data,
+        dragEvent.container.data,
+        dragEvent.previousIndex,
+        dragEvent.currentIndex,
+      );
+    }
+  }
+
+  search(value: string){
+    this.term = value;
   }
 }

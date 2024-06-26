@@ -20,6 +20,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { ContactEditComponent } from './contacts/contact-edit/contact-edit.component';
 import { DocumentEditComponent } from './documents/document-edit/document-edit.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ContactsFilterPipe } from './contacts/contacts-filter.pipe';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { Environment } from '../environment/environment';
 
 
 @NgModule({
@@ -39,16 +45,24 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MessageListComponent,
     DropdownDirective,
     ContactEditComponent,
-    DocumentEditComponent
+    DocumentEditComponent,
+    ContactsFilterPipe,
   ],
   imports: [
     BrowserModule, 
     AppRoutingModule, 
     DragDropModule, 
     FormsModule, 
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule,
+    AngularFireModule,
+    AngularFireAuthModule,
+    AngularFirestoreModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    { provide: 'firebaseConfig', useValue: Environment.firebaseConfig }
+
+  ],
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

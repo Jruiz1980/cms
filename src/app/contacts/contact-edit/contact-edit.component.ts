@@ -1,87 +1,121 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Contact } from '../contact.model';
+import { NgForm } from '@angular/forms';
 import { ContactService } from '../contact.service';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { CdkDragDrop, transferArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'cms-contact-edit',
   templateUrl: './contact-edit.component.html',
   styleUrl: './contact-edit.component.css'
 })
-export class ContactEditComponent implements OnInit {
-drop($event: CdkDragDrop<Contact[],any,any>) {
-throw new Error('Method not implemented.');
-}
+export class ContactEditComponent implements OnInit, OnDestroy {
+
   originalContact: Contact;
   contact: Contact;
   groupContacts: Contact[] = [];
   editMode: boolean = false;
   id: string;
+$dragEvent: CdkDragDrop<string[],string[],any>;
 
-  constructor(
-    private contactService: ContactService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
 
-  ngOnInit(): void {
-    this.route.params.subscribe((params: Params) => {
-      this.id = params['id'];
-      if (this.id === undefined || this.id === null) {
+  constructor(private contactService: ContactService, private router: Router, private route: ActivatedRoute){}
+
+  ngOnInit(){
+    this.route.params.subscribe((params: Params)=> {
+      let id = params.id;
+      if(id === null || id === undefined){
         this.editMode = false;
         return;
       }
-      this.originalContact = this.contactService.getContact(this.id);
-      if (this.originalContact === undefined || this.originalContact === null) {
+      this.originalContact = this.contactService.getContact(id);
+      if(this.originalContact === null || this.originalContact === undefined){
         return;
       }
       this.editMode = true;
       this.contact = JSON.parse(JSON.stringify(this.originalContact));
-      if (this.originalContact.group !== null) {
-        this.groupContacts = this.contact.group;
+  
+      if(this.contact.group != null && this.contact.group != undefined){
+        this.groupContacts = this.contact.group.slice()
       }
-    });
+    })
   }
 
-  onSubmit(form: NgForm) {
+  ngOnDestroy(): void {
+
+  }
+
+  onSubmit(form: NgForm){
     let value = form.value;
-    let newContact = new Contact(
-      this.id,
-      value.name,
-      value.email,
-      value.phone,
-      value.imageUrl,
-      this.groupContacts
-    );
-    if (this.editMode) {
+    let newContact: Contact;
+    if(this.editMode){
+      newContact = new Contact(this.contact.id, value.name, value.email, value.phone, value.imageUrl, this.groupContacts);
+    } else {
+      newContact = new Contact(null, value.name, value.email, value.phone, value.imageUrl, this.groupContacts);
+    }
+    if(this.editMode){
       this.contactService.updateContact(this.originalContact, newContact);
     } else {
       this.contactService.addContact(newContact);
     }
-    this.onCancel();
+    this.router.navigate(['contacts'])
   }
 
-  onCancel() {
-    this.router.navigate(['../'], { relativeTo: this.route });
+  onCancel(){
+    this.editMode = false;
+    this.router.navigate(['contacts'])
   }
 
-  /* DRAG AND DROP METHODS */
-  addToGroup($event: any) {
-    const selectedContact: Contact = $event.dragData;
-    if (this.isInvalidContact(selectedContact)) return;
-    this.groupContacts.push(selectedContact);
+  drop(dragEvent: CdkDragDrop<string[]>) {
+    if (dragEvent.previousContainer === dragEvent.container) {
+      moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex); 
+    } else {
+      console.log(dragEvent);
+      transferArrayItem(
+        dragEvent.previousContainer.data,
+        dragEvent.container.data,
+        dragEvent.previousIndex,
+        dragEvent.currentIndex,
+      );
+    }
+    console.log(this.groupContacts);
   }
 
-  isInvalidContact(newContact: Contact) {
-    if (!newContact) return true;
-    if (this.contact && newContact.id === this.contact.id) return true;
-    return this.groupContacts.some((c) => newContact.id === c.id);
+  
+isInvalidContact(newContact: Contact) {
+  if (!newContact) {// newContact has no value
+    return true;
   }
+  if (this.contact && newContact.id === this.contact.id) {
+    return true;
+  }
+  for (let i = 0; i < this.groupContacts.length; i++){
+    if (newContact.id === this.groupContacts[i].id) {
+      return true;
+    }
+  }
+  return false;
+}
 
-  onRemoveItem(index: number) {
-    if (index < 0 || index >= this.groupContacts.length) return;
-    this.groupContacts.splice(index, 1);
+addToGroup($event: any) {
+  const selectedContact: Contact = $event.dragData;
+  const invalidGroupContact = this.isInvalidContact(selectedContact);
+  if (invalidGroupContact){
+    return;
   }
+  this.groupContacts.push(selectedContact);
+}
+
+onRemoveItem(index: number) {
+  if (index < 0 || index >= this.groupContacts.length) {
+    return;
+  }
+  this.groupContacts.splice(index, 1);
+}
+
+  onDelete(){}
+
+  
+
 }

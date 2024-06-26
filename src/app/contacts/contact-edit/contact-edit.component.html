@@ -77,7 +77,10 @@
           <label for="groupList">Group Contacts:</label>
 
           <div class="row" id="groupList"
-              style="min-height: 3rem;" cdkDropList [cdkDropListData]="groupContacts" [cdkDropListConnectedTo]="['contacts-list']" (cdkDropListDropped)="drop($event)">
+              style="min-height: 3rem;" 
+              cdkDropList [cdkDropListData]="groupContacts" 
+              [cdkDropListConnectedTo]="['contacts-list']" 
+              (cdkDropListDropped)="drop($dragEvent)">
 
             <div *ngFor="let contact of groupContacts; let i = index">
               <div>
