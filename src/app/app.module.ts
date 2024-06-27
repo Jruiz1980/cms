@@ -22,10 +22,11 @@ import { DocumentEditComponent } from './documents/document-edit/document-edit.c
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ContactsFilterPipe } from './contacts/contacts-filter.pipe';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireModule } from '@angular/fire/app';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { Environment } from '../environment/environment';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 
 @NgModule({
@@ -54,7 +55,7 @@ import { Environment } from '../environment/environment';
     DragDropModule, 
     FormsModule, 
     ReactiveFormsModule,
-    HttpClientModule,
+    HttpClient,
     AngularFireModule,
     AngularFireAuthModule,
     AngularFirestoreModule
@@ -64,5 +65,6 @@ import { Environment } from '../environment/environment';
 
   ],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }
