@@ -1,68 +1,105 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
 import { Document } from './document.model';
 import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
+import { Subject } from 'rxjs';
+import {HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DocumentService {
+  documents: Document[] = [];
   selectedDocumentEvent = new EventEmitter<Document>();
-  documentListChangedEvent = new Subject<Document[]>();
+  documentChangedEvent = new Subject<Document[]>();
 
-  private documents: Document[] = [];
-  private maxDocumentId: number;
+  maxDocumentId : number;
 
-  constructor() {
-    this.documents = MOCKDOCUMENTS;
-    this.maxDocumentId = this.getMaxId();
-   }
+  constructor(private http: HttpClient) {
+    http.get('https://wdd-project-ecdc5-default-rtdb.firebaseio.com/documents.json')
+    .subscribe(
+      (documents: Document[]) => {
+        this.documents = documents;
+        this.maxDocumentId = this.getMaxId();
+        this.documents.sort(function(a: Document, b:Document){
+          return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
+        })
+        this.documentChangedEvent.next(this.documents.slice());
+      },
+      (error: any) => {console.log(error)}
+    );
 
-   getDocuments(): Document[] {
-    return this.documents.slice();
-   }
-
-   getDocument(id: string): Document {
-    return this.documents.find((d) => d.id === id)
-   }
-
-   deleteDocument(document: Document) {
-    if (!document) return;
-    const pos = this.documents.indexOf(document);
-    if (pos < 0) return;
-    this.documents.splice(pos, 1);
-    this.documentListChangedEvent.next(this.documents.slice());
   }
+
+  getDocuments(): Document[] {
+    return this.documents.slice();
+  }
+
+  getDocument(id: string): Document {
+    let theDocument: Document = null;
+
+    this.documents.forEach(doc => {
+      if(doc.id === id){
+        theDocument = doc;
+      }
+    })
+    return theDocument;
+  }
+
+  deleteDocument(document: Document){
+    if(!document){
+      return;
+    }
+    const position = this.documents.indexOf(document);
+    if (position < 0) {
+      return
+    }
+    this.documents.splice(position, 1);
+    this.storeDocuments();
+  }
+
   getMaxId(): number {
     let maxId = 0;
-    this.documents.forEach((d) => {
-      if (+d.id > maxId) maxId = +d.id;
-    });
+    this.documents.forEach(document => {
+      let currentId = +document.id
+      if (currentId > maxId){
+        maxId = currentId;
+      }
+    })
+
     return maxId;
   }
 
-  addDocument(newDoc: Document) {
-    if (newDoc === null || newDoc === undefined) return;
-    this.maxDocumentId++;
-    newDoc.id = `${this.maxDocumentId}`;
-    this.documents.push(newDoc);
-    this.documentListChangedEvent.next(this.documents.slice());
-  }
-
-  updateDocument(original: Document, newDoc: Document) {
-    if (
-      newDoc === null ||
-      newDoc === undefined ||
-      original === null ||
-      original === undefined
-    ) {
+  addDocument(newDocument: Document){
+    if(newDocument === undefined || newDocument === null){
       return;
     }
-    const pos = this.documents.indexOf(original);
-    if (pos < 0) return;
+    this.maxDocumentId++;
+    newDocument.id = this.maxDocumentId.toString();
+    this.documents.push(newDocument);
 
-    newDoc.id = original.id;
-    this.documents[pos] = newDoc;
-    this.documentListChangedEvent.next(this.documents.slice());
+    this.storeDocuments();
   }
+
+  updateDocument(originalDocument: Document, newDocument: Document){
+    if(originalDocument === undefined || originalDocument === null || newDocument === undefined || newDocument === null){
+      return;
+    }
+    let position = this.documents.indexOf(originalDocument);
+    if (position < 0){
+      return;
+    }
+    newDocument.id = originalDocument.id;
+    this.documents[position] = newDocument;
+    this.storeDocuments();
+  }
+
+  storeDocuments(){
+    const header = new HttpHeaders({'contentType': 'application/json'});
+    const data = JSON.stringify(this.getDocuments());
+    this.http.put('https://wdd-project-ecdc5-default-rtdb.firebaseio.com/documents.json', data, {'headers':header})
+    .subscribe(()=>{
+      this.documentChangedEvent.next(this.documents.slice());
+    })
+  }
+
 }

@@ -57,11 +57,10 @@ import { Environment } from '../environment/environment';
     HttpClientModule,
     AngularFireModule,
     AngularFireAuthModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
   ],
   providers: [
     { provide: 'firebaseConfig', useValue: Environment.firebaseConfig }
-
   ],
   bootstrap: [AppComponent],
 })
