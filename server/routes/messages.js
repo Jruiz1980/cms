@@ -1,4 +1,4 @@
-const sequenceGenerator = require("./sequenceGenerator");
+const sequence = require("./sequences");
 const Message = require("../models/message");
 var express = require("express");
 
@@ -21,7 +21,7 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/", (req, res, next) => {
-    const maxMessageId = sequenceGenerator.nextId("messages");
+    const maxMessageId = sequence.nextId("messages");
 
     const msg = new Message({
         id: maxMessageId,

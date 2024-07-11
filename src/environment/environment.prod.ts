@@ -1,2 +1,3 @@
-export enum EnvironmentProd {
-}
+export const environment = {
+    production: true
+};

@@ -5,9 +5,10 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require("mongoose");
 
 // import the routing file to handle the default (index) route
-var index = require('./server/routes/app');
+const index = require('./server/routes/app');
 const messageRoutes = require('./server/routes/messages');
 const contactRoutes = require('./server/routes/contacts');
 const documentsRoutes = require('./server/routes/documents');
@@ -55,10 +56,23 @@ app.use('/documents', documentsRoutes);
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/cms/browser/index.html'));
 });
+//#region "MONGO"
+// establish a connection to the mongo database
+const dbUrl = 'mongodb://localhost:27017/';
+mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log('Connected to database');
+    })
+    .catch(err => {
+        console.error('Error connecting to database:', err);
+    });
 
-// Define the port address and tell express to use this port
-const port = process.env.PORT || '3000';
-app.set('port', port);
+  //#endregion "MONGO"
+
+  // Define the port address and tell express to use this port
+    const port = process.env.PORT || "3000";
+    app.set("port", port);
+
 
 // Create HTTP server.
 const server = http.createServer(app);

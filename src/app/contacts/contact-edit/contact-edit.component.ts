@@ -3,7 +3,7 @@ import { Contact } from '../contact.model';
 import { NgForm } from '@angular/forms';
 import { ContactService } from '../contact.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { CdkDragDrop, transferArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'cms-contact-edit',
@@ -11,13 +11,15 @@ import { CdkDragDrop, transferArrayItem, moveItemInArray } from '@angular/cdk/dr
   styleUrl: './contact-edit.component.css'
 })
 export class ContactEditComponent implements OnInit, OnDestroy {
+onDrop($event: CdkDragDrop<Contact[],any,any>) {
+throw new Error('Method not implemented.');
+}
 
   originalContact: Contact;
   contact: Contact;
   groupContacts: Contact[] = [];
   editMode: boolean = false;
   id: string;
-$dragEvent: CdkDragDrop<string[],string[],any>;
 
 
   constructor(private contactService: ContactService, private router: Router, private route: ActivatedRoute){}
@@ -67,19 +69,17 @@ $dragEvent: CdkDragDrop<string[],string[],any>;
     this.router.navigate(['contacts'])
   }
 
-  drop(dragEvent: CdkDragDrop<string[]>) {
-    if (dragEvent.previousContainer === dragEvent.container) {
-      moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex); 
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      return;
     } else {
-      console.log(dragEvent);
       transferArrayItem(
-        dragEvent.previousContainer.data,
-        dragEvent.container.data,
-        dragEvent.previousIndex,
-        dragEvent.currentIndex,
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
       );
     }
-    console.log(this.groupContacts);
   }
 
   
@@ -88,11 +88,11 @@ isInvalidContact(newContact: Contact) {
     return true;
   }
   if (this.contact && newContact.id === this.contact.id) {
-    return true;
+     return true;
   }
   for (let i = 0; i < this.groupContacts.length; i++){
-    if (newContact.id === this.groupContacts[i].id) {
-      return true;
+     if (newContact.id === this.groupContacts[i].id) {
+       return true;
     }
   }
   return false;
@@ -102,14 +102,14 @@ addToGroup($event: any) {
   const selectedContact: Contact = $event.dragData;
   const invalidGroupContact = this.isInvalidContact(selectedContact);
   if (invalidGroupContact){
-    return;
+     return;
   }
   this.groupContacts.push(selectedContact);
 }
 
 onRemoveItem(index: number) {
   if (index < 0 || index >= this.groupContacts.length) {
-    return;
+     return;
   }
   this.groupContacts.splice(index, 1);
 }

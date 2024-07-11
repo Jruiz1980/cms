@@ -1,18 +1,18 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const childDocumentSchema = mongoose.Schema({
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    description: { type: String },
-    url: { type: String },
-});
+const documentSubSchema = mongoose.Schema({
+    id: {type: String, required: true},
+    name: {type: String, required: true},
+    url: {type: String, required: true},
+    description: {type: String}
+})
 
 const documentSchema = mongoose.Schema({
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    description: { type: String },
-    url: { type: String },
-    children: [{ type: childDocumentSchema }],
+    id: {type: String, required: true},
+    name: {type: String, required: true},
+    url: {type: String, required: true},
+    description: {type: String},
+    children: [documentSubSchema]
 });
 
 module.exports = mongoose.model("Document", documentSchema);
