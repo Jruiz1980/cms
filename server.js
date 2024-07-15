@@ -13,7 +13,11 @@ const messageRoutes = require('./server/routes/messages');
 const contactRoutes = require('./server/routes/contacts');
 const documentsRoutes = require('./server/routes/documents');
 
-// ... ADD CODE TO IMPORT YOUR ROUTING FILES HERE ... 
+
+// establish a connection to the mongo database
+mongoose.connect('mongodb://localhost:27017/cms',
+    { useNewUrlParser: true }
+);
 
 var app = express(); // create an instance of express
 
@@ -55,29 +59,16 @@ app.use('/documents', documentsRoutes);
 // Tell express to map all other non-defined routes back to the index page
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/cms/browser/index.html'));
-});
-//#region "MONGO"
-// establish a connection to the mongo database
-const dbUrl = 'mongodb://localhost:27017/';
-mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('Connected to database');
-    })
-    .catch(err => {
-        console.error('Error connecting to database:', err);
     });
-
-  //#endregion "MONGO"
-
-  // Define the port address and tell express to use this port
-    const port = process.env.PORT || "3000";
-    app.set("port", port);
-
-
-// Create HTTP server.
-const server = http.createServer(app);
-
-// Tell the server to start listening on the provided port
-server.listen(port, function() {
-    console.log('API running on localhost: ' + port)
-});
+    
+    // Define the port address and tell express to use this port
+    const port = process.env.PORT || '3000';
+    app.set('port', port);
+    
+    // Create HTTP server.
+    const server = http.createServer(app);
+    
+    // Tell the server to start listening on the provided port
+    server.listen(port, function() {
+        console.log('API running on localhost: ' + port)
+    });
